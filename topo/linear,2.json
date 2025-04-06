@@ -1,0 +1,85 @@
+{
+  "switch": {
+    "50001": {
+      "mcast": {
+        "id": 1,
+        "ports": [
+          1,
+          2
+        ]
+      },
+      "vlan_id_to_ports": {
+        "100": [
+          1
+        ],
+        "200": [
+          2
+        ]
+      }
+    }
+  },
+  "host": {
+    "h1s1": {
+      "vlan": 100
+    },
+    "h2s1": {
+      "vlan": 200
+    }
+  },
+  "decision_tree_rules": {
+    "50001": [
+      {
+        "avg_pkt_size": 0,
+        "byte_count": 0,
+        "result": 1
+      },
+      {
+        "avg_pkt_size": 0,
+        "byte_count": 3000,
+        "result": 1
+      },
+      {
+        "avg_pkt_size": 130,
+        "byte_count": 0,
+        "result": 1
+      },
+      {
+        "avg_pkt_size": 130,
+        "byte_count": 3000,
+        "result": 1
+      },
+      {
+        "avg_pkt_size": 140,
+        "byte_count": 0,
+        "result": 0
+      },
+      {
+        "avg_pkt_size": 140,
+        "byte_count": 3000,
+        "result": 0
+      },
+      {
+        "avg_pkt_size": 150,
+        "byte_count": 0,
+        "result": 0
+      },
+      {
+        "avg_pkt_size": 150,
+        "byte_count": 3000,
+        "result": 0
+      },
+      {
+        "avg_pkt_size": 140,
+        "byte_count": 0,
+        "avg_iat": 0.0,
+        "result": 1
+      },
+      {
+        "avg_pkt_size": 140,
+        "byte_count": 0,
+        "avg_iat": 0.01,
+        "result": 1
+      }
+    ]
+  }
+}
