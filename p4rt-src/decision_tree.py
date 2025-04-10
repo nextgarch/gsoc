@@ -10,10 +10,10 @@
 
 # # Fields expected in the rules
 # MATCH_FIELDS = [
-#                 "pkt_count", 
-#                 "byte_count", 
-#                 "avg_pkt_size", 
-#                 "duration", 
+#                 "pkt_count",
+#                 "byte_count",
+#                 "avg_pkt_size",
+#                 "duration",
 #                 "avg_iat"
 #                 ]
 
@@ -59,7 +59,7 @@
 #     for rule in rules:
 #         try:
 #             table_entry = p4sh.TableEntry("MyIngress.classifier")(action="MyIngress.write_result")
-            
+
 #             rule_with_defaults={
 #                 "pkt_count":0,
 #                 "byte_count":0,
@@ -73,21 +73,21 @@
 #                 # print(f"Field: {field}")
 #                 val = rule_with_defaults[field]
 #                 if field in FLOAT_SCALES:
-                    
+
 #                     val = int(val * FLOAT_SCALES[field])
-                    
+
 #                     print(f"  Field {field}: {rule_with_defaults[field]} → scaled to {val}")
 #                 else:
 #                     print(f"  Field {field}: {val}")
-                    
-                    
+
+
 #                 table_entry.match[f"meta.{field}"] = str(val)
 
 
 #             # table_entry.match["hdr.tcp.flags"] = "0x01"  # Match on FIN
 #             table_entry.action["result"] = str(rule["result"])
 #             table_entry.insert()
-            
+
 #             provided_fields=[f"{k}={rule[k]}"for k in MATCH_FIELDS if k in rule]
 #             cond = " AND ".join(provided_fields) if provided_fields else "default"
 #             print(f"[✓] Rule installed: if {cond} → result = {rule['result']}")
@@ -370,6 +370,27 @@ if __name__ == '__main__':
 
         except Exception as e:
             print(f"[✗] Failed to insert rule {rule}: {e}\n")
+
+    # Add forwarding rules for h1 and h2
+    print("\n[+] Installing forwarding rules for hosts...")
+    try:
+        # Add forwarding rule for h1 (10.0.0.1) -> port 1
+        print("Adding forwarding rule for h1 (10.0.0.1) -> port 1")
+        te = p4sh.TableEntry("MyIngress.ipv4_forwarding")(action="MyIngress.forward")
+        te.match["hdr.ipv4.dstAddr"] = "10.0.0.1/32"
+        te.action["port"] = "1"
+        te.insert()
+
+        # Add forwarding rule for h2 (10.0.0.2) -> port 2
+        print("Adding forwarding rule for h2 (10.0.0.2) -> port 2")
+        te = p4sh.TableEntry("MyIngress.ipv4_forwarding")(action="MyIngress.forward")
+        te.match["hdr.ipv4.dstAddr"] = "10.0.0.2/32"
+        te.action["port"] = "2"
+        te.insert()
+
+        print("[✓] Forwarding rules installed successfully!")
+    except Exception as e:
+        print(f"[✗] Failed to insert forwarding rules: {e}\n")
 
     print("[✓] Controller is running. Press Ctrl+C to exit.\n")
     try:
